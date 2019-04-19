@@ -1,20 +1,78 @@
+buildscript {
+	ext {
+		SPRING_BOOT_VERSION = '2.0.5.RELEASE'
+		SPRING_GRADLE_DEP_MAN_VERSION = '1.0.6.RELEASE'
+	}
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${SPRING_BOOT_VERSION}"
+		classpath "io.spring.gradle:dependency-management-plugin:${SPRING_GRADLE_DEP_MAN_VERSION}"
+
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.1.4.RELEASE'
 	id 'java'
 }
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'in.pabreja.exercise.industrybuying'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
 
 repositories {
+	mavenLocal()
+	maven {
+		url "https://maven.springframework.org/release"
+	}
+	maven { url "http://repo.maven.apache.org/maven2" }
+	maven {
+		name 'jboss-nexus'
+		url "http://repository.jboss.org/nexus/content/groups/public/"
+	}
+	maven {
+		name 'jahia-public'
+		url "https://devtools.jahia.com/nexus/content/groups/public"
+	}
+	maven {
+		name "jboss-snapshots"
+		url "http://snapshots.jboss.org/maven2/"
+	}
 	mavenCentral()
 }
 
+ext {
+	LOGBACK_VERSION='1.1.8'
+}
+
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// -- add-modules for JDK9+
+	runtime group: 'javax.xml.bind', name: 'jaxb-api', version:'2.2.11'
+	runtime group: 'com.sun.xml.bind', name: 'jaxb-core', version:'2.2.11'
+	runtime group: 'com.sun.xml.bind', name: 'jaxb-impl', version:'2.2.11'
+	runtime group: 'javax.activation', name: 'activation', version: '1.1.1'
+	compile "ch.qos.logback:logback-classic"
+
+	//oracle driver dependencies
+	compile("com.oracle.jdbc:ojdbc7:12.1.0.2")
+
 }
